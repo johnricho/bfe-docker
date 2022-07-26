@@ -16,21 +16,7 @@ You can then bring up the Docker Compose network with `server` instead of just u
 - **php** - `:9000`  for nginx proxy server in the nginx config file.
 - **xdebug** - `:9001` on VS Code Xdebug configuration file.
 
-
-## MySQL Storage
-
-By default, whenever a docker network is brought down, MySQL data will be removed after the containers are destroyed. MySQL `mysql` directory has been added to persist data even after bringing containers down and back up, in the mysql folder isn't included, please do the following:
-
-1. Create a `mysql` dictory in the `bfe-docker` project root directory.
-2. Under the mysql service in the `docker-compose.yml` file, ensure the following lines are there:
-
-```
-volumes:
-  - ./mysql:/var/lib/mysql
-```
-
-
-## Nginx Configuration
+## Nginx
 
 An `nginx` directory has been added for `nginx` web server block configuration and `nginx.conf` file must be created if not exist and must always contain the below server block configuration code in order for wordpress and nginx to stay linked:
 
@@ -85,8 +71,21 @@ server {
 
 The `server_name` in the server configuration block can be replaced with your custom test domain or IP address.
 
-## WordPress Directory
+## WordPress
 
 The `wordpress` directory in the `bfe-docker` project root directory contain the latest version of WordPress, this directory must always present in the root directory so as to be mapped to the nginx web directory so as to serve wordpress as the web project. If at anytime there is no file in the wordpress folder or its mistakenly deleted, do the following: 
 
 - Spin up and built the docker network with `docker-compose up -d --build server`, then pull the files for a new WordPress installation by running `docker-compose run --rm wp core download` in your terminal to download fresh wordpress from docker repo.
+
+
+## MySQL
+
+By default, whenever a docker network is brought down, MySQL data will be removed after the containers are destroyed. MySQL `mysql` directory has been added to persist data even after bringing containers down and back up, in the mysql folder isn't included, please do the following:
+
+1. Create a `mysql` dictory in the `bfe-docker` project root directory.
+2. Under the mysql service in the `docker-compose.yml` file, ensure the following lines are there:
+
+```
+volumes:
+  - ./mysql:/var/lib/mysql
+```
