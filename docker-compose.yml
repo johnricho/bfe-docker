@@ -1,0 +1,55 @@
+version: '3.9'
+
+networks:
+  wordpress:
+    driver: bridge  
+
+services:
+  #handle nginx docker configuration
+  server:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: server
+    depends_on:
+      - wp
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./wordpress:/var/www/html:delegated
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - wordpress
+  #handle mysql database docker configuration
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=wordpress
+    volumes: 
+      - ./mysql:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - wordpress
+  #handle wordpress, php and Xdebug docker configuration
+  wp:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: wp
+    depends_on: 
+      - db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - WORDPRESS_DB_HOST=db:3306
+      - WORDPRESS_DB_USER=$MYSQL_USER
+      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - ./wordpress:/var/www/html:delegated
+    networks:
+      - wordpress
