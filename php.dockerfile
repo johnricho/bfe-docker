@@ -9,3 +9,5 @@ RUN set -ex && apk update && apk upgrade --available
 RUN set -ex && mkdir -p /usr/src/php/ext/xdebug \
 	&& curl -fsSL https://pecl.php.net/get/xdebug-${XDEBUG_VERSION} | tar xvz -C "/usr/src/php/ext/xdebug" --strip 1 \
 	&& docker-php-ext-install xdebug
+
+COPY php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

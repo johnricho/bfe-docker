@@ -16,6 +16,9 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "3306:3306"
+      - "9001:9001"
+      - "9002:9002"
     volumes:
       - ./wordpress:/var/www/html:delegated
       - ./nginx:/etc/nginx/conf.d
